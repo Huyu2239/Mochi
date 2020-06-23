@@ -28,7 +28,7 @@ async def neko(ctx):
 @bot.listen()
 @commands.guild_only()
 async def on_message(message):
-    if message.author.id==721265051729657879:
+    if message.author.id==721265051729657879 or message.channel.id!=689098603871862833:
         return
     if "眠い" in message.content or "ねむい" in message.content:
         await message.channel.send("寝なさい")
