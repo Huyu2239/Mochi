@@ -1,0 +1,6 @@
+{
+    "bot_status":{
+        "token": "AAA",
+        "prefix": "m?"
+    }
+}
