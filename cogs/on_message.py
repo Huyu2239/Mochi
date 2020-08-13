@@ -1,6 +1,14 @@
 import discord
 from discord.ext import commands
-    
+
+lists=[
+    721270505621028926,
+    689098603871862833,
+    730043491626778775,
+    730043630626144298,
+    726656130654273636
+]
+
 class On_message(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -12,8 +20,9 @@ class On_message(commands.Cog):
             return
         if message.channel.id==721270505621028926:
             await self.bot.get_channel(689098603871862833).send(message.content)
-        if message.guild.id!=694093456854876262 and message.channel.id!=689098603871862833:
+        if message.guild.id not in lists:
             return
+
         if "眠い" in message.content or "ねむい" in message.content:
             await message.channel.send("寝なさい")
             return
