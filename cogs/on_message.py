@@ -20,7 +20,7 @@ class On_message(commands.Cog):
             return
         if message.channel.id==721270505621028926:
             await self.bot.get_channel(689098603871862833).send(message.content)
-        if message.guild.id not in lists:
+        if message.channel.id not in lists:
             return
 
         if "眠い" in message.content or "ねむい" in message.content:
