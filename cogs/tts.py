@@ -7,6 +7,6 @@ class tts(commands.Cog):
         
     @commands.command()
     async def join(self, message):
-
+        await message.channel.send('–¢ŽÀ‘•‚Å‚·\n‚µ‚Î‚ç‚­‚¨‘Ò‚¿‚­‚¾‚³‚¢')
 def setup(bot):
     bot.add_cog(tts(bot))
