@@ -15,7 +15,7 @@ loop = asyncio.new_event_loop()
 INITIAL_EXTENSIONS = [
     'info',
     'on_message',
-    'pole',
+    'poll',
     'translation',
     'url'
 ]

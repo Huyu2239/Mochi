@@ -7,9 +7,9 @@ class Pole(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.content.startswith("m?pole "):
+        if message.content.startswith("m?poll "):
             emoji_list = ['0️⃣','1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣','🔟️']
-            vote_list = message.content[len("m?pole "):].split()
+            vote_list = message.content[len("m?poll "):].split()
             vote_list_count = []
             result_str = '‪'
             count=len(vote_list)

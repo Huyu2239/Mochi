@@ -4,7 +4,7 @@ from datetime import datetime
 INITIAL_EXTENSIONS = [
     'info',
     'on_message',
-    'pole',
+    'poll',
     'translation',
     'url'
 ]
@@ -12,9 +12,6 @@ class Info(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         
-    @commands.command()
-    async def help(self, ctx):
-        await ctx.send('未実装')
     @commands.command()
     async def ping(self, ctx):
         await ctx.send('pong')
@@ -36,6 +33,7 @@ class Info(commands.Cog):
     @commands.command()
     async def reload(self, ctx):
         if ctx.author.id!=637868010157244449:
+            await ctx.send('ばーか')
             return
         for extension in INITIAL_EXTENSIONS:
             self.bot.reload_extension(f"cogs.{extension}")
