@@ -29,9 +29,6 @@ class On_message(commands.Cog):
             await self.bot.get_channel(689098603871862833).send(message.content)
         if message.channel.id not in lists:
             return
-        
-        content = "おつかれ～"
-
         for key, item in contents.items():
             for i in item:
                 if i in message.content:
