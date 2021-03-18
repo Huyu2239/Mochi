@@ -1,64 +1,52 @@
+import os
 import discord
-from discord.ext import commands 
-import traceback 
-import asyncio
-from discord.ext import tasks
 import json
+from discord.ext import commands
+import traceback
+from dotenv import load_dotenv
+load_dotenv()
+if os.name == 'nt':
+    data_directory = 'json\\'
+else:
+    data_directory = 'json/'
 
-with open('setting.json', mode='r', encoding='utf-8') as sett:
-    set_json = sett.read()
-    set_json = str(set_json).replace("'", '"').replace('True', 'true').replace('False', 'false')
-    token = json.loads(set_json)['bot_status']['token']
-    prefix = json.loads(set_json)['bot_status']['prefix']
-loop = asyncio.new_event_loop()
 
-INITIAL_EXTENSIONS = [
-    'info',
-    'on_message',
-    'poll',
-    'translation',
-    'url'
-]
-
-async def run():
-    bot = MyBot()
-    try:
-        await bot.start(token)
-    except KeyboardInterrupt:
-        await bot.logout()
-
-class MyBot(commands.Bot):
-
-    def __init__(self):
-        super().__init__(command_prefix=commands.when_mentioned_or(prefix), loop=loop)
-        self.remove_command('help')
+class Mochi(commands.Bot):
+    def __init__(self, command_prefix, **options):
+        self.prefix = commands.when_mentioned_or(command_prefix)
+        allowed_mentions = discord.AllowedMentions(everyone=False, roles=False, users=True)
+        intents = discord.Intents.all()
+        super().__init__(command_prefix=self.prefix, intents=intents, allowed_mentions=allowed_mentions, **options)
+        self.logch_id = 799621304303091762  # error-log
+        # self.remove_command('help')
+        self.data_directory = data_directory
+        with open(f'{self.data_directory}expand.json') as f:
+            self.expand = json.load(f)
 
     async def on_ready(self):
-        for extension in INITIAL_EXTENSIONS:
-            try:
-                self.load_extension(f"cogs.{extension}")
-            except commands.ExtensionAlreadyLoaded:
-                self.reload_extension(f"cogs.{extension}")
-        await self.change_presence(activity=discord.Game(name=f"{prefix}about"))
-    
-    async def on_guild_join(self, _):
-        await self.change_presence(activity=discord.Game(name=f"{prefix}about"))
-
-    async def on_guild_remove(self, _):
-        await self.change_presence(activity=discord.Game(name=f"{prefix}about"))
+        for cog in os.listdir("./cogs"):
+            if cog.endswith(".py"):
+                try:
+                    self.load_extension(f"cogs.{cog[:-3]}")
+                except commands.ExtensionAlreadyLoaded:
+                    self.reload_extension(f"cogs.{cog[:-3]}")
+                except discord.ext.commands.errors.ExtensionFailed:
+                    continue
+        print('-----')
+        print('起動')
+        print('-----')
+        await self.change_presence(activity=discord.Game(name="m?about"))
 
     async def on_command_error(self, ctx, error1):
-        if isinstance(error1, (commands.CommandNotFound, commands.CommandInvokeError)):
-            return
+        orig_error = getattr(error1, "original", error1)
+        error_msg = ''.join(traceback.TracebackException.from_exception(orig_error).format())
+        embed = discord.Embed(title='ERROR', color=discord.Colour.red())
+        if isinstance(error, commands.CommandNotFound):
+            embed.add_field(name='CommandNotFount', value=f'存在しないコマンドです\n```py{error_msg}```')
+        await ctx.send('エラーが発生しました', embed=embed)
+        print(error_msg)
+
 
 if __name__ == '__main__':
-    try:
-        print('-----')
-        print('進捗だめです')
-        print('-----')
-        main_task = loop.create_task(run())
-        loop.run_until_complete(main_task)
-        loop.close()
-
-    except Exception as error:
-        print("エラー情報\n" + traceback.format_exc())
+    bot = Mochi(command_prefix="m?")
+    bot.run(os.environ['TOKEN'])
